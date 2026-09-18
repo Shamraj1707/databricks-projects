@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wanderbricks ER Diagram - Databricks Samples</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+      padding: 24px;
+    }
+    header {
+      max-width: 1400px;
+      margin: 0 auto 20px auto;
+      background: #ffffff;
+      padding: 20px 28px;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    header p {
+      font-size: 14px;
+      color: #64748b;
+      margin-top: 4px;
+    }
+    .badge-container {
+      display: flex;
+      gap: 12px;
+    }
+    .badge {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .badge-supply { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+    .badge-trans { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+    .badge-users { background: #fef9c3; color: #854d0e; border: 1px solid #fef08a; }
+    .badge-events { background: #f3e8ff; color: #6b21a8; border: 1px solid #e9d5ff; }
+
+    .canvas-card {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 28px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+      border: 1px solid #e2e8f0;
+      overflow-x: auto;
+    }
+    .mermaid {
+      display: flex;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div>
+      <h1>Wanderbricks Relational Schema (3NF)</h1>
+      <p>Databricks Sample Catalog (<code>samples.wanderbricks</code>) Entity Relationship Diagram</p>
+    </div>
+    <div class="badge-container">
+      <span class="badge badge-supply">Supply & Inventory</span>
+      <span class="badge badge-trans">Core Facts (Bookings & Payments)</span>
+      <span class="badge badge-users">Users & Hosts</span>
+      <span class="badge badge-events">Events & Feedback</span>
+    </div>
+  </header>
+
+  <div class="canvas-card">
+    <pre class="mermaid">
+erDiagram
+    COUNTRIES ||--|{ DESTINATIONS : "contains (1..*)"
+    COUNTRIES ||--o{ HOSTS : "operates_in (0..*)"
+    COUNTRIES ||--o{ USERS : "resides_in (0..*)"
+
+    DESTINATIONS ||--o{ PROPERTIES : "located_in (0..*)"
+    HOSTS ||--|{ PROPERTIES : "owns_manages (1..*)"
+
+    PROPERTIES ||--o{ PROPERTY_AMENITIES : "features (0..*)"
+    AMENITIES ||--o{ PROPERTY_AMENITIES : "mapped_in (0..*)"
+
+    PROPERTIES ||--o{ BOOKINGS : "reserved_in (0..*)"
+    USERS ||--o{ BOOKINGS : "books (0..*)"
+
+    BOOKINGS ||--o| PAYMENTS : "paid_by (0..1)"
+    BOOKINGS ||--o| REVIEWS : "generates (0..1)"
+    USERS ||--o{ REVIEWS : "writes (0..*)"
+
+    USERS ||--o{ PAGE_VIEWS : "impressions (0..*)"
+    PAGE_VIEWS ||--o{ CLICKSTREAM : "actions (0..*)"
+
+    COUNTRIES {
+        string country PK
+        string country_code
+        string continent
+    }
+
+    DESTINATIONS {
+        bigint destination_id PK
+        string country FK
+        string destination
+        string state_or_province
+        string description
+    }
+
+    HOSTS {
+        bigint host_id PK
+        string country FK
+        string name
+        string email
+        string phone
+        boolean is_verified
+        boolean is_active
+        double rating
+        timestamp joined_at
+    }
+
+    PROPERTIES {
+        bigint property_id PK
+        bigint host_id FK
+        bigint destination_id FK
+        string title
+        decimal base_price
+        string property_type
+        int max_guests
+        int bedrooms
+        double bathrooms
+        double property_latitude
+        double property_longitude
+        timestamp created_at
+    }
+
+    AMENITIES {
+        bigint amenity_id PK
+        string name
+        string category
+        string icon
+    }
+
+    PROPERTY_AMENITIES {
+        bigint property_id PK,FK
+        bigint amenity_id PK,FK
+    }
+
+    USERS {
+        bigint user_id PK
+        string country FK
+        string name
+        string email
+        string user_type
+        boolean is_business
+        string company_name
+        timestamp created_at
+    }
+
+    BOOKINGS {
+        bigint booking_id PK
+        bigint user_id FK
+        bigint property_id FK
+        date check_in
+        date check_out
+        int guests_count
+        decimal total_amount
+        string status
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    PAYMENTS {
+        bigint payment_id PK
+        bigint booking_id FK
+        decimal amount
+        string payment_method
+        string status
+        timestamp payment_date
+    }
+
+    REVIEWS {
+        bigint review_id PK
+        bigint booking_id FK
+        bigint user_id FK
+        bigint property_id FK
+        double rating
+        string comment
+        boolean is_deleted
+        timestamp created_at
+    }
+
+    PAGE_VIEWS {
+        bigint view_id PK
+        bigint user_id FK
+        bigint property_id FK
+        string device_type
+        string page_url
+        string referrer
+        timestamp timestamp
+    }
+
+    CLICKSTREAM {
+        bigint user_id FK
+        bigint property_id FK
+        string event
+        string metadata
+        timestamp timestamp
+    }
+    </pre>
+  </div>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'base',
+      themeVariables: {
+        primaryColor: '#ffffff',
+        primaryTextColor: '#0f172a',
+        primaryBorderColor: '#cbd5e1',
+        lineColor: '#64748b',
+        secondaryColor: '#f1f5f9',
+        tertiaryColor: '#ffffff'
+      }
+    });
+  </script>
+</body>
+</html>

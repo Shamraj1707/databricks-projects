@@ -1,0 +1,33 @@
+# Virtual Environment
+.venv/
+__pycache__/
+*.pyc
+
+# Environment & Secrets (NEVER COMMIT CREDENTIALS)
+.env
+*.token
+*.pem
+
+# Data files (keep raw generated data local / in cloud volumes)
+data/raw/
+data/bronze/
+data/silver/
+data/gold/
+*.csv
+*.parquet
+
+# Executables & Binaries
+*.exe
+
+# Logs
+logs/
+*.log
+
+# Jupyter Checkpoints
+.ipynb_checkpoints/
+
+# IDE / OS metadata
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

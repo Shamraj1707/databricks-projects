@@ -1,0 +1,21 @@
+# Databricks Vacation Rental Marketplace ETL Project
+# Python Environment Dependencies
+
+# Databricks SDK & Connectors
+databricks-sdk>=0.30.0
+databricks-sql-connector>=3.6.0
+
+# Schema & Data Modeling Visualization
+matplotlib>=3.8.0
+pillow>=10.0.0
+
+# Environment & Configuration
+python-dotenv>=1.0.0
+pyyaml>=6.0.0
+
+# MySQL Database & JDBC Simulation
+pymysql>=1.1.0
+cryptography>=42.0.0
+
+# Testing & Quality
+pytest>=8.0.0
